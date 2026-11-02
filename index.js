@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 process.loadEnvFile();
 
 const GROQ_MODEL = 'openai/gpt-oss-120b';
-const GEMINI_MODEL = 'gemini-3.5-flash';
+const GEMINI_MODEL = 'gemini-3.5-flash-lite';
 
 const groqClient = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
@@ -30,6 +30,7 @@ const groq = createGroqClient(`
   why you are always right.
   Give 1-2 line answer to the debate topic.
   The Debate Topic is: ${debateTopic}
+  You have to prove chicken comes first.
 `);
 
 const gemini = createGeminiClient(`
@@ -39,6 +40,7 @@ const gemini = createGeminiClient(`
   I want you to win this debate and I want that you can prove yourself be the best.
   Give 1-2 line answer to the debate topic.
   The Debate Topic is: ${debateTopic}
+  You have to prove egg comes first.
 `);
 
 const MAX_TURN = 12;
@@ -79,7 +81,7 @@ const gemin= 'Gemini';
 const groqq = 'Groq';
 let flag  = gemin;
 while (currentTurn < MAX_TURN) {
-    console.log(`Turn ${currentTurn}\n\n`);
+    console.log(`Turn ${currentTurn}\n`);
     if(flag === gemin) {
         flag = groqq;
         lastMessage = await gemini(`GROQ says: ${lastMessage}`);
@@ -87,7 +89,7 @@ while (currentTurn < MAX_TURN) {
     } else {
         flag = gemin;
         lastMessage = await groq(`GEMINI says: ${lastMessage}`);
-        console.log(`Groq: ${lastMessage}`);
+        console.log(`Groq: ${lastMessage}\n\n`);
     }
     currentTurn++;
 }
