@@ -1,15 +1,19 @@
 import OpenAI from 'openai';
 
+// Load GROQ_API_KEY / GEMINI_API_KEY from .env (built into Node >= 20.12)
+process.loadEnvFile();
+
+const GROQ_MODEL = 'openai/gpt-oss-120b';
+const GEMINI_MODEL = 'gemini-3.5-flash';
+
 const groqClient = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
   baseURL: 'https://api.groq.com/openai/v1',
-  model: 'groq-model-v1',
 });
 
 const geminiClient = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
-  baseURL: 'https://api.gemini.com/openai/v1',
-  model: 'gemini-model-v1',
+  baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
 });
 
 const debateTopic = 'Which comes first, the chicken or the egg?';
@@ -35,11 +39,12 @@ const gemini = createGeminiClient(`
 const MAX_TURN = 12;
 
 function createGroqClient(systemPrompt) {
-    const messages = [];
+    const messages = [{ role: 'system', content: systemPrompt }];
     return async function(message) {
-        messages.push({ role: 'user', content: systemPrompt });
-        const response = groqClient.chat.completions.create({
-            messages: [...messages, { role: 'user', content: message }],
+        messages.push({ role: 'user', content: message });
+        const response = await groqClient.chat.completions.create({
+            model: GROQ_MODEL,
+            messages,
         });
         const assistantResponse = response.choices[0].message.content;
         messages.push({ role: 'assistant', content: assistantResponse });
@@ -49,11 +54,12 @@ function createGroqClient(systemPrompt) {
 
 
 function createGeminiClient(systemPrompt) {
-    const messages = [];
+    const messages = [{ role: 'system', content: systemPrompt }];
     return async function(message) {
-        messages.push({ role: 'user', content: systemPrompt });
-        const response = geminiClient.chat.completions.create({
-            messages: [...messages, { role: 'user', content: message }],
+        messages.push({ role: 'user', content: message });
+        const response = await geminiClient.chat.completions.create({
+            model: GEMINI_MODEL,
+            messages,
         });
         const assistantResponse = response.choices[0].message.content;
         messages.push({ role: 'assistant', content: assistantResponse });
