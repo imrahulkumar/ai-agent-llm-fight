@@ -9,11 +9,14 @@ const GEMINI_MODEL = 'gemini-3.5-flash';
 const groqClient = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
   baseURL: 'https://api.groq.com/openai/v1',
+  maxRetries: 6,
 });
 
 const geminiClient = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
   baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+  // Gemini often returns 503 "model overloaded"; the SDK retries 503/429 with backoff
+  maxRetries: 6,
 });
 
 const debateTopic = 'Which comes first, the chicken or the egg?';
@@ -76,7 +79,7 @@ const gemin= 'Gemini';
 const groqq = 'Groq';
 let flag  = gemin;
 while (currentTurn < MAX_TURN) {
-    console.log(`Turn ${currentTurn}: ${debateTopic}`);
+    console.log(`Turn ${currentTurn}\n\n`);
     if(flag === gemin) {
         flag = groqq;
         lastMessage = await gemini(`GROQ says: ${lastMessage}`);
