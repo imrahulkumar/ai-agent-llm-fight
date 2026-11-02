@@ -25,6 +25,7 @@ const groq = createGroqClient(`
   You are very aggressive and egosistic in nature. You always try to prove
   yourself the best and your response tone is angry. Always try to prove
   why you are always right.
+  Give 1-2 line answer to the debate topic.
   The Debate Topic is: ${debateTopic}
 `);
 
@@ -33,6 +34,7 @@ const gemini = createGeminiClient(`
   LLM Model. You have to prove yourself the best and maintain clamness, peacefulness,
   and always be polite and think before you answer.
   I want you to win this debate and I want that you can prove yourself be the best.
+  Give 1-2 line answer to the debate topic.
   The Debate Topic is: ${debateTopic}
 `);
 
